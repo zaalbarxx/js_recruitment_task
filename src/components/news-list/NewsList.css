@@ -1,0 +1,14 @@
+.news-list {
+  list-style: none;
+}
+
+.news-list--separator {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  border-top: 1px solid black;
+}
+
+.news-list--loading {
+  font-size: 30px;
+}
