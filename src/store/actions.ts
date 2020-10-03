@@ -1,5 +1,5 @@
 import { AppState, AsyncAction, BookmarkItem, NewsItem } from './interfaces';
-import { newsApi } from '../services/news';
+import { newsApi, NewsResponse } from '../services/news';
 
 export interface Action<Payload = any> {
   type: string;
@@ -13,6 +13,7 @@ export const ACTION_TYPE = {
   CHANGE_PAGE: '[NEWS] Change Page',
   SET_LOADING: '[NEWS] Set Loading',
   FETCH_NEWS_SUCCESS: '[NEWS] Update News',
+  SET_CRITERIA: '[NEWS] Set Criteria',
 };
 
 export const stateUpdated = (): Action => ({
@@ -43,12 +44,67 @@ export const updateNews = (payload: {
   payload,
 });
 
+export const setCriteria = ({
+  page,
+  section,
+  searchQuery,
+}: {
+  page: number;
+  section: string;
+  searchQuery: string;
+}): Action => ({
+  type: ACTION_TYPE.SET_CRITERIA,
+  payload: { page, section, searchQuery },
+});
+
 export const changePage = (newPage: number): AsyncAction<AppState> => async (
-  state,
+  getState,
   dispatch
 ) => {
   dispatch(setLoading(true));
-  const apiResponse = await newsApi.get({ page: newPage });
+  const apiResponse = await getNewsByState(getState());
   dispatch(setLoading(false));
   dispatch(updateNews(apiResponse));
 };
+
+export const changeSection = (
+  newSection: string
+): AsyncAction<AppState> => async (getState, dispatch) => {
+  const state = getState();
+  dispatch(setLoading(true));
+  dispatch(
+    setCriteria({
+      page: state.news.pagination.pageNumber,
+      section: newSection,
+      searchQuery: '',
+    })
+  );
+  const apiResponse = await getNewsByState(getState());
+  dispatch(setLoading(false));
+  dispatch(updateNews(apiResponse));
+};
+
+export const changeFilter = (
+  searchQuery: string
+): AsyncAction<AppState> => async (getState, dispatch) => {
+  const state = getState();
+  dispatch(setLoading(true));
+  dispatch(
+    setCriteria({
+      page: state.news.pagination.pageNumber,
+      section: state.news.section,
+      searchQuery,
+    })
+  );
+  const apiResponse = await getNewsByState(getState());
+  dispatch(setLoading(false));
+  dispatch(updateNews(apiResponse));
+};
+
+const getNewsByState = (state: AppState): Promise<NewsResponse> => {
+  return newsApi.get({
+    page: state.news.pagination.pageNumber,
+    section: state.news.section,
+    searchQuery: state.news.filter,
+  });
+}

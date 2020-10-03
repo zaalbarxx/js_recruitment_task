@@ -5,7 +5,6 @@ import { deepMerge } from '../utils/deep-merge';
 
 export let appStore: Store<AppState>;
 
-
 export const createInitialAppState = (state?: DeepPartial<AppState>): AppState =>
   deepMerge(
     {
@@ -19,6 +18,7 @@ export const createInitialAppState = (state?: DeepPartial<AppState>): AppState =
         },
         bookmarks: [],
         loading: false,
+        section: '',
       },
     },
     state ?? ({} as any)

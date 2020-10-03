@@ -30,7 +30,7 @@ export class Store<State = any> {
 
   dispatch(action: Action | AsyncAction<State>): void {
     if (isAsyncAction(action)) {
-      action(this.state, this.dispatch.bind(this));
+      action(this.getState.bind(this), this.dispatch.bind(this));
       return;
     }
 

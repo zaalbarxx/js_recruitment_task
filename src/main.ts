@@ -7,16 +7,26 @@ import { NewsList } from './components/news-list/NewsList';
 import { bookmarks } from './services/bookmarks';
 import { newsApi } from './services/news';
 import { BookmarksList } from './components/bookmarks-list/bookmarks-list';
-import { PageSelect } from './components/paging/PageSelect';
 import { appStore, createInitialAppState, setStore } from './store/app-store';
+import { SectionSelect } from './components/filtering/SectionSelect';
+import { PageSelect } from './components/filtering/PageSelect';
+import { SearchInput } from './components/filtering/SearchInput';
 
 const renderApp = (state: AppState): void => {
   const rootNodes = [
     document.querySelector('#newsList'),
     document.querySelector('#bookmarksList'),
     document.querySelector('#activePageSelect'),
+    document.querySelector('#sectionSelect'),
+    document.querySelector('#searchQueryInput'),
   ];
-  const [newsList, bookmarksList, activePage] = rootNodes;
+  const [
+    newsList,
+    bookmarksList,
+    activePage,
+    sectionSelect,
+    searchQueryInput,
+  ] = rootNodes;
   rootNodes.forEach((node) => (node ? (node.innerHTML = '') : ''));
 
   newsList!.appendChild(
@@ -31,7 +41,13 @@ const renderApp = (state: AppState): void => {
       totalPages: state.news.pagination.size,
     })
   );
+  sectionSelect!.appendChild(
+    SectionSelect({
+      selectedSection: state.news.section,
+    })
+  );
 
+  searchQueryInput!.appendChild(SearchInput({ inputValue: state.news.filter }));
   // document.querySelector('#activePageSelectColumn')!.innerHTML = ActivePageSelect(pages, currentPage);
   // document.querySelector('#readLaterListColumn')!.innerHTML = ReadLaterList(
   //   bookmarkedNews

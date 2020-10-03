@@ -25,6 +25,7 @@ export interface AppState {
     };
     loading: boolean;
     filter: string;
+    section: string;
     bookmarks: BookmarkItem[];
   };
 }
@@ -35,4 +36,4 @@ export type HandlersMap<State> = HashMap<
 
 export type Dispatch = (action: Action) => void;
 
-export type AsyncAction<State> = (state: State, dispatch: Dispatch) => void;
+export type AsyncAction<State> = (getState: () => State, dispatch: Dispatch) => void;

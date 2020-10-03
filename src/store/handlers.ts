@@ -56,4 +56,18 @@ export const handlers: HandlersMap<AppState> = {
       },
     };
   },
+  [ACTION_TYPE.SET_CRITERIA]: (payload: { page: number, section: string, searchQuery: string}, state) => {
+    return {
+      ...state,
+      news: {
+        ...state.news,
+        pagination: {
+          ...state.news.pagination,
+          pageNumber: payload.page,
+        },
+        section: payload.section,
+        filter: payload.searchQuery,
+      }
+    }
+  }
 };
